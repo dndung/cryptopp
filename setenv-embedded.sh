@@ -22,6 +22,10 @@ unset IS_CROSS_COMPILE
 unset IS_IOS
 unset IS_ANDROID
 unset IS_ARM_EMBEDDED
+unset ARM_EMBEDDED_FLAGS
+
+export ARM_EMBEDDED_TOOLCHAIN="/home/dungdn/workspace/src/s905_kern49/toolchain/gcc/linux-x86/aarch64/gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu/bin"
+export ARM_EMBEDDED_SYSROOT="/home/dungdn/workspace/sdk/usr/aarch64-linux-gnu/sysroot"
 
 if [ -z "${ARM_EMBEDDED_TOOLCHAIN-}" ]; then
 	ARM_EMBEDDED_TOOLCHAIN="/usr/bin"
@@ -36,7 +40,7 @@ fi
 # TOOL_PREFIX="arm-linux-gnu"
 
 # Ubuntu
-TOOL_PREFIX="arm-linux-gnueabi"
+TOOL_PREFIX="aarch64-linux-gnu"
 
 export CPP="$ARM_EMBEDDED_TOOLCHAIN/$TOOL_PREFIX-cpp"
 export CC="$ARM_EMBEDDED_TOOLCHAIN/$TOOL_PREFIX-gcc"
@@ -99,16 +103,17 @@ fi
 
 # Fix C++ header paths for Ubuntu
 # ARM_EMBEDDED_TOOLCHAIN_VERSION="4.7.3"
-ARM_EMBEDDED_TOOLCHAIN_VERSION="5.4.0"
-ARM_EMBEDDED_CXX_HEADERS="$ARM_EMBEDDED_SYSROOT/include/c++/$ARM_EMBEDDED_TOOLCHAIN_VERSION"
+ARM_EMBEDDED_TOOLCHAIN_VERSION="6.3.1"
+#ARM_EMBEDDED_CXX_HEADERS="$ARM_EMBEDDED_SYSROOT/include/c++/$ARM_EMBEDDED_TOOLCHAIN_VERSION"
+ARM_EMBEDDED_CXX_HEADERS="/home/dungdn/workspace/src/s905_kern49/toolchain/gcc/linux-x86/aarch64/gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu/aarch64-linux-gnu/include/c++/$ARM_EMBEDDED_TOOLCHAIN_VERSION"
 
 if [ ! -d "$ARM_EMBEDDED_CXX_HEADERS" ]; then
-  echo "ERROR: ARM_EMBEDDED_CXX_HEADERS is not valid"
+  echo "ERROR1: ARM_EMBEDDED_CXX_HEADERS is not valid"
   [ "$0" = "$BASH_SOURCE" ] && exit 1 || return 1
 fi
 
-if [ ! -d "$ARM_EMBEDDED_CXX_HEADERS/arm-linux-gnueabi" ]; then
-  echo "ERROR: ARM_EMBEDDED_CXX_HEADERS is not valid"
+if [ ! -d "$ARM_EMBEDDED_CXX_HEADERS/aarch64-linux-gnu" ]; then
+  echo "ERROR2: ARM_EMBEDDED_CXX_HEADERS is not valid"
   [ "$0" = "$BASH_SOURCE" ] && exit 1 || return 1
 fi
 
@@ -116,8 +121,9 @@ fi
 # export ARM_EMBEDDED_FLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -Wl,--fix-cortex-a8 -I$ARM_EMBEDDED_CXX_HEADERS -I$ARM_EMBEDDED_CXX_HEADERS/arm-linux-gnueabi"
 
 # Add additional flags below, like -mcpu=cortex-m3.
+export ARM_EMBEDDED_FLAGS="-I$ARM_EMBEDDED_CXX_HEADERS -I$ARM_EMBEDDED_CXX_HEADERS/aarch64-linux-gnu"
 if [ -z "$ARM_EMBEDDED_FLAGS" ]; then
-  export ARM_EMBEDDED_FLAGS="-I$ARM_EMBEDDED_CXX_HEADERS -I$ARM_EMBEDDED_CXX_HEADERS/arm-linux-gnueabi"
+  export ARM_EMBEDDED_FLAGS="-I$ARM_EMBEDDED_CXX_HEADERS -I$ARM_EMBEDDED_CXX_HEADERS/aarch64-linux-gnu"
 fi
 
 # And print stuff to wow the user...

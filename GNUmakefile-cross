@@ -33,7 +33,7 @@ endif
 IS_i686 := $(shell echo "$HOSTX" | $(EGREP) -v 64 | $(EGREP) -i -c 'i.86')
 IS_x86_64 := $(shell echo "$HOSTX" | $(EGREP) -i -c 'x86_64|amd64')
 IS_ARM := $(shell echo "$HOSTX" | $(EGREP) -i -c 'arm')
-IS_ARMv8 := $(shell echo "$HOSTX" | $(EGREP) -i -c 'aarch32|aarch64')
+IS_ARMv8 := "1"
 
 CLANG_COMPILER := $(shell $(CXX) --version 2>&1 | $(EGREP) -i -c "clang")
 
@@ -488,6 +488,11 @@ cpu.o : cpu.cpp
 
 # SSE4.2 or ARMv8a available
 crc-simd.o : crc-simd.cpp
+	$(info HOSTX: $(HOSTX))
+	$(info IS_ARMv8: $(IS_ARMv8))
+	$(info IS_NEON: $(IS_NEON))
+	$(info HAVE_CRC: $(HAVE_CRC))
+	$(info CRC_FLAG: $(CRC_FLAG))
 	$(CXX) $(strip $(CXXFLAGS) $(CRC_FLAG) -c) $<
 
 # PCLMUL or ARMv7a/ARMv8a available
